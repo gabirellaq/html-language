@@ -1,0 +1,100 @@
+<!Doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title></title>
+        <link rel="stylesheet" href="assets/css/style.css">
+    </head>
+    <body>
+        <div class="header">
+            <h1 data-lang="txt_slogan_title"></h1>
+            <span class="changelanguagebox">
+                <span class="changelanguagebtn" data-lang="txt_language_btn"></span>
+                <span class="changelanguagedrop">
+                    <span class="zh" data-lang="txt_language_zh"></span>
+                    <span class="en" data-lang="txt_language_en"></span>
+                </span>
+            </span>
+        </div>
+        <div class="content">
+            <h2 data-lang="txt_body_title"></h2>
+            <p data-lang="txt_body_txt1"></p>
+            <p data-lang="txt_body_txt2"></p>
+            <ul>
+                <li>
+                    <img data-lang="img_body_img1_src">
+                    <span data-lang="txt_body_img1_des"></span>
+                </li>
+                <li>
+                    <img data-lang="img_body_img2_src">
+                    <span data-lang="txt_body_img2_des"></span>
+                </li>
+                <li>
+                    <img data-lang="img_body_img3_src">
+                    <span data-lang="txt_body_img3_des"></span>
+                </li>
+                <li>
+                    <img data-lang="img_body_img4_src">
+                    <span data-lang="txt_body_img4_des"></span>
+                </li>
+            </ul>
+
+        </div>
+
+        <script src="http://cdn.bootcss.com/jquery/3.0.0-beta1/jquery.min.js"></script>
+        <script src="assets/js/jquery.i18n.properties.js"></script>
+
+        <script>
+            var language_pack = {  
+                now_lang : 0, // 0:ch,1:en  
+                loadProperties : function(new_lang){  
+                    var self = this;  
+                    var tmp_lang = '';  
+                    if(new_lang === 0){  
+                        tmp_lang = 'zh';  
+                        $('body').removeClass('en').addClass('zh');  
+                    }else{  
+                        tmp_lang = 'en';  
+                        $('body').removeClass('zh').addClass('en');  
+                    }  
+                    jQuery.i18n.properties({//加载资浏览器语言对应的资源文件  
+                        name: 'Messages', //资源文件名称  
+                        path:'assets/language/', //资源文件路径  
+                        language: tmp_lang,  
+                        cache: false,  
+                        mode:'map', //用Map的方式使用资源文件中的值  
+                        callback: function() {//加载成功后设置显示内容
+                            for(var i in $.i18n.map){
+                                if(i.startsWith('txt_')){
+                                    // 文字类
+                                    $('[data-lang="'+i+'"]').text($.i18n.map[i]); 
+                                }else if(i.startsWith('img_')) {
+                                    $('[data-lang="'+i+'"]').attr({
+                                        'src': $.i18n.map[i].split(',')[0],
+                                        'alt': $.i18n.map[i].split(',')[1]
+                                    });
+                                }                                
+                            }  
+                            document.title = $.i18n.map['txt_html_title'];  
+                        }  
+                    });
+                    self.now_lang = new_lang;  
+                }  
+            }  
+            $(document).ready(function(){  
+                language_pack.loadProperties(0);  
+                
+                $('.changelanguagedrop > span').click(function(){  
+                    var new_lang;  
+                    $(this).addClass('active').siblings().removeClass('active');
+                    if(language_pack.now_lang == 0){  
+                        new_lang = 1;  
+                    }else{  
+                        new_lang = 0;  
+                    }  
+                    language_pack.loadProperties(new_lang);  
+                });  
+            });  
+        </script>
+    </body>
+</html>
